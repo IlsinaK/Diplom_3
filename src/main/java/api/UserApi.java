@@ -1,13 +1,15 @@
 package api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.qameta.allure.Step;
 import io.restassured.RestAssured;
 import io.restassured.response.ValidatableResponse;
-
 import static io.restassured.RestAssured.given;
 
 public class UserApi {
     private static final String BASE_URL = "https://stellarburgers.nomoreparties.site/api/auth";
 
+    @Step("Регистрация пользователя")
     public ValidatableResponse registerUser(String requestBody) {
         return RestAssured.given()
                 .header("Content-Type", "application/json")
@@ -16,37 +18,27 @@ public class UserApi {
                 .post(BASE_URL + "/register")
                 .then();
     }
-//    public ValidatableResponse deleteUser(String email) {
-//        return RestAssured.given()
-//                .header("Content-Type", "application/json")
-//                .when()
-//                .delete(BASE_URL + "/user", email) // Проверьте маршрут, если это необходимо
-//                .then();
-//    }
-//    public ValidatableResponse deleteUser() {
-//        return RestAssured
-//                .given()
-//                .log().all()
-//                .when()
-//                .delete(BASE_URL + "/user")
-//                .then()
-//                .log().all();
-//    }
-public String getToken(String email, String password) {
-    String requestBody = String.format("{ \"email\": \"%s\", \"password\": \"%s\" }", email, password);
-    ValidatableResponse response = given()
-            .contentType("application/json")
-            .body(requestBody)
-            .when()
-            .post(BASE_URL + "/login")
-            .then();
-
-    return response.extract().path("accessToken");
-}
 
 
+    @Step("Получение токена пользователя")
+    public String getToken(String email, String password) {
+        UserDataLombok userData = new UserDataLombok(email, password, null);
 
-    public ValidatableResponse deleteUser(String token, String password) {
+        String requestBody = userData.toString();
+
+        ValidatableResponse response = given()
+                .contentType("application/json")
+                .body(requestBody)
+                .when()
+                .post(BASE_URL + "/login")
+                .then();
+
+        return response.extract().path("accessToken").toString();
+    }
+
+
+    @Step("Удаление пользователя с токеном")
+    public ValidatableResponse deleteUser(String token) {
         return RestAssured
                 .given()
                 .header("Authorization", "Bearer " + token)
