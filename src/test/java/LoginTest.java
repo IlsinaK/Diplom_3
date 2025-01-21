@@ -1,19 +1,22 @@
 import api.UserApi;
 import api.UserDataLombok;
 import api.UserGenerator;
-import io.qameta.allure.Step;
+import io.qameta.allure.Description;
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import org.example.pageobject.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.WebDriver;
 
 import static com.codeborne.selenide.Selenide.closeWebDriver;
 import static com.codeborne.selenide.Selenide.open;
 import static org.example.pageobject.ConstructorPage.CONSTRUCTOR_PAGE_URL;
 import static org.junit.Assert.assertTrue;
 
-public class LoginTest {
+public class LoginTest extends BaseUITest{
+    private WebDriver driver;
     private ConstructorPage constructorPage;
     private LoginPage loginPage;
     private RegistrationPage registerPage;
@@ -38,8 +41,6 @@ public class LoginTest {
 
         open(CONSTRUCTOR_PAGE_URL);
 
-        // Инициализация страниц
-
         loginPage = new LoginPage();
         registerPage = new RegistrationPage();
         forgotPasswordPage = new ForgotPasswordPage();
@@ -47,74 +48,52 @@ public class LoginTest {
     }
 
     @Test
-    @Step("Вход по кнопке «Войти в аккаунт» на главной странице")
-    public void loginFromMainPage() {
+    @DisplayName("Вход по кнопке «Войти в аккаунт» на главной странице")
+    @Description("Тест проверяет вход пользователя через кнопку 'Войти в аккаунт' на главной странице.")
+    public void loginFromMainPageTest() {
         constructorPage.goToAccount();
         loginPage.login(user.getEmail(), user.getPassword());
         constructorPage.goToProfile();
 
-        System.out.println("Селектор profileButton: " + profilePage.getProfileButton()); // Логирование селектора
-
-        // Проверка видимости кнопки "Профиль"
-        if (!profilePage.getProfileButton().isDisplayed()) {
-            System.out.println("Кнопка «Профиль» не видна.");
-        } else {
-            System.out.println("Кнопка «Профиль» видна.");
-        }
-
-        profilePage.waitForProfileButton(); // ожидание кнопки
-
+        profilePage.waitForProfileButton(); // Ожидание кнопки
         assertTrue("Кнопка «Профиль» не видна.", profilePage.getProfileButton().isDisplayed());
+        profilePage.logout();
+
     }
 
 
     @Test
-    @Step("Вход через кнопку «Личный кабинет» со страницы конструктора")
-    public void loginFromProfileButton() {
+    @DisplayName("Вход через кнопку «Личный кабинет» со страницы конструктора")
+    @Description("Тест проверяет вход через кнопку 'Личный кабинет' со страницы конструктора.")
+    public void loginFromProfileButtonTest() {
         constructorPage.goToProfile();  // Переход к форме входа
         loginPage.login(user.getEmail(), user.getPassword());
         constructorPage.goToProfile();
 
-        System.out.println("Селектор profileButton: " + profilePage.getProfileButton());
-
-        // Проверка видимости кнопки "Профиль"
-        if (!profilePage.getProfileButton().isDisplayed()) {
-            System.out.println("Кнопка «Профиль» не видна.");
-        } else {
-            System.out.println("Кнопка «Профиль» видна.");
-        }
-
-        profilePage.waitForProfileButton(); // ожидание кнопки
-
+        profilePage.waitForProfileButton(); // Ожидание кнопки
         assertTrue("Кнопка «Профиль» не видна.", profilePage.getProfileButton().isDisplayed());
+        profilePage.logout();
     }
 
     @Test
-    @Step("Вход через кнопку «Войти» в форме регистрации")
-    public void loginFromRegistrationPage() {
+    @DisplayName("Вход через кнопку «Войти» в форме регистрации")
+    @Description("Тест проверяет вход через кнопку 'Войти' в форме регистрации.")
+    public void loginFromRegistrationPageTest() {
         constructorPage.goToAccount(); // Переход к форме входа
         loginPage.goToRegister();  // Переход к форме регистрации
         registerPage.goToLogin(); // Переход на страницу логина
         loginPage.login(user.getEmail(), user.getPassword());
         constructorPage.goToProfile();
 
-        System.out.println("Селектор profileButton: " + profilePage.getProfileButton());
-
-        // Проверка видимости кнопки "Профиль"
-        if (!profilePage.getProfileButton().isDisplayed()) {
-            System.out.println("Кнопка «Профиль» не видна.");
-        } else {
-            System.out.println("Кнопка «Профиль» видна.");
-        }
-
-        profilePage.waitForProfileButton(); // ожидание кнопки
-
+        profilePage.waitForProfileButton(); // Ожидание кнопки
         assertTrue("Кнопка «Профиль» не видна.", profilePage.getProfileButton().isDisplayed());
+        profilePage.logout();
     }
 
     @Test
-    @Step("Вход через кнопку «Войти» в форме восстановления пароля")
-    public void loginFromForgotPasswordPage() {
+    @DisplayName("Вход через кнопку «Войти» в форме восстановления пароля")
+    @Description("Тест проверяет вход через кнопку 'Войти' в форме восстановления пароля.")
+    public void loginFromForgotPasswordPageTest() {
         constructorPage.goToAccount(); // Переход к форме входа
         loginPage.goToForgotPassword(); // Переход на страницу восстановления пароля
         forgotPasswordPage.loginButtonClick(); // Клик по кнопке "Войти"
@@ -122,23 +101,18 @@ public class LoginTest {
         loginPage.login(user.getEmail(), user.getPassword());
         constructorPage.goToProfile();
 
-        System.out.println("Селектор profileButton: " + profilePage.getProfileButton());
-
-        if (!profilePage.getProfileButton().isDisplayed()) {  // Проверка видимости кнопки "Профиль"
-            System.out.println("Кнопка «Профиль» не видна.");
-        } else {
-            System.out.println("Кнопка «Профиль» видна.");
-        }
-
-        profilePage.waitForProfileButton(); // ожидание кнопки
-
+        profilePage.waitForProfileButton(); // Ожидание кнопки
         assertTrue("Кнопка «Профиль» не видна.", profilePage.getProfileButton().isDisplayed());
+        profilePage.logout();
     }
 
     @After
     public void tearDown() {
         String deleteToken = userApi.getToken(user.getEmail(), user.getPassword());
-        userApi.deleteUser(deleteToken, user.getPassword()); // Удаление пользователя через API
-        closeWebDriver(); // Закрытие драйвера
+        userApi.deleteUser(deleteToken);
+        if (driver != null) {
+            driver.quit();
+            closeWebDriver(); // Закрытие драйвера
+        }
     }
 }

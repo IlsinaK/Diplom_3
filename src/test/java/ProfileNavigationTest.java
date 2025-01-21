@@ -1,7 +1,8 @@
 import api.UserApi;
 import api.UserDataLombok;
 import api.UserGenerator;
-import io.qameta.allure.Step;
+import io.qameta.allure.Description;
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import org.example.pageobject.*;
 import org.junit.After;
@@ -15,7 +16,7 @@ import static org.example.pageobject.ConstructorPage.CONSTRUCTOR_PAGE_URL;
 import static org.junit.Assert.assertTrue;
 
 
-public class ProfileNavigationTest {
+public class ProfileNavigationTest extends BaseUITest{
     private WebDriver driver;
     private ProfilePage profilePage;
     private ConstructorPage constructorPage;
@@ -50,33 +51,20 @@ public class ProfileNavigationTest {
     }
 
     @Test
-    @Step("Проверка перехода из личного кабинета в конструктор через кнопку «Конструктор»")
+    @DisplayName("Проверка перехода из личного кабинета в конструктор через кнопку «Конструктор»")
+    @Description("Тест проверяет возможность перехода из личного кабинета в конструктор через соответствующую кнопку.")
     public void testGoToConstructorFromProfile() {
         profilePage.goToConstructor(); // Переход в конструктор
-
-        if (!constructorPage.getAssembleBurger().isDisplayed()) {  // Проверка видимости Текста «Соберите бургер»
-            System.out.println("Текст «Соберите бургер» не виден.");
-        } else {
-            System.out.println("Текст «Соберите бургер» виден.");
-        }
-
-        constructorPage.waitForAssembleBurger(); // ожидание кнопки
-
+        constructorPage.waitForAssembleBurger(); // Ожидание видимости текста «Соберите бургер»
         assertTrue("Текст «Соберите бургер» не виден.", constructorPage.getAssembleBurger().isDisplayed());
     }
 
     @Test
-    @Step("Проверка перехода из личного кабинета в конструктор через логотип Stellar Burgers")
-    public void testGoToConstructorFromLogo() {
+    @DisplayName("Проверка перехода из личного кабинета в конструктор через логотип Stellar Burgers")
+    @Description("Тест проверяет возможность перехода из личного кабинета в конструктор через клик на логотип.")
+    public void goToConstructorFromLogoTest() {
         profilePage.clickLogo(); // Клик на логотип
-
-        if (!constructorPage.getAssembleBurger().isDisplayed()) {  // Проверка видимости Текста «Соберите бургер»
-            System.out.println("Текст «Соберите бургер» не виден.");
-        } else {
-            System.out.println("Текст «Соберите бургер» виден.");
-        }
-
-        constructorPage.waitForAssembleBurger(); // ожидание кнопки
+        constructorPage.waitForAssembleBurger(); // Ожидание видимости текста «Соберите бургер»
 
         assertTrue("Текст «Соберите бургер» не виден.", constructorPage.getAssembleBurger().isDisplayed());
     }
@@ -84,7 +72,7 @@ public class ProfileNavigationTest {
     @After
     public void tearDown() {
         String deleteToken = userApi.getToken(user.getEmail(), user.getPassword());
-        userApi.deleteUser(deleteToken, user.getPassword()); // Удаление пользователя через API
+        userApi.deleteUser(deleteToken); // Удаление пользователя через API
         closeWebDriver(); // Закрытие драйвера
     }
 }

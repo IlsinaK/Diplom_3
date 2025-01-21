@@ -1,4 +1,5 @@
-import io.qameta.allure.Step;
+import io.qameta.allure.Description;
+import io.qameta.allure.junit4.DisplayName;
 import org.example.pageobject.ConstructorPage;
 import org.junit.After;
 import org.junit.Before;
@@ -20,7 +21,8 @@ public class ConstructorTest extends BaseUITest {
     }
 
     @Test
-    @Step("Проверка выбора раздела Булки")
+    @DisplayName("Проверка выбора раздела Булки")
+    @Description("Тест проверяет, что раздел Булки становится активным после его выбора.")
     public void selectBunsTest() {
         constructorPage.selectSauces();
         constructorPage.selectBuns(); // Выбор раздела булки
@@ -28,14 +30,16 @@ public class ConstructorTest extends BaseUITest {
     }
 
     @Test
-    @Step("Проверка выбора раздела Соусы")
+    @DisplayName("Проверка выбора раздела Соусы")
+    @Description("Тест проверяет, что раздел Соусы становится активным после его выбора.")
     public void selectSaucesTest() {
         constructorPage.selectSauces(); // Выбор раздела соусы
         assertTrue("Раздел Соусы не активен", constructorPage.isActiveSectionSauces()); // Проверка, что раздел активен
     }
 
     @Test
-    @Step("Проверка выбора раздела Начинки")
+    @DisplayName("Проверка выбора раздела Начинки")
+    @Description("Тест проверяет, что раздел Начинки становится активным после его выбора.")
     public void selectToppingsTest() {
         constructorPage.selectToppings(); // Выбор раздела начинки
         assertTrue("Раздел Начинки не активен", constructorPage.isActiveSectionToppings()); // Проверка, что раздел активен
@@ -43,6 +47,7 @@ public class ConstructorTest extends BaseUITest {
 
     @After
     public void tearDown() {
+
         closeWebDriver(); // Закрываем браузер
     }
 }

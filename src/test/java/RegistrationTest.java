@@ -1,5 +1,6 @@
 import api.UserApi;
-import io.qameta.allure.Step;
+import io.qameta.allure.Description;
+import io.qameta.allure.junit4.DisplayName;
 import org.example.pageobject.ConstructorPage;
 import org.example.pageobject.LoginPage;
 import org.example.pageobject.ProfilePage;
@@ -17,7 +18,7 @@ import static com.codeborne.selenide.Selenide.open;
 import static org.junit.Assert.assertTrue;
 
 
-public class RegistrationTest {
+public class RegistrationTest extends BaseUITest{
 
     private ConstructorPage constructorPage;
     private LoginPage loginPage;
@@ -59,26 +60,34 @@ public class RegistrationTest {
     }
 
     @Test
-    @Step("Проверка успешной регистрации")
-    public void successfulRegistration() {
-        registrationPage.goRegister(name, email, password, true);
+    @DisplayName("Проверка успешной регистрации")
+    @Description("Тест проверяет успешную регистрацию пользователя и отображение кнопки оформления заказа.")
+    public void successfulRegistrationTest() {
+        registrationPage.goRegister(name, email, password);
 
         loginPage.login(email, password);
-        loginPage.loginButtonClick();
 
         constructorPage.waitForCreateOrderButton();
 
-        assertTrue("Кнопка «Оформить заказ» не видна.", constructorPage.getCreateOrderButton().isDisplayed());
+        assertTrue("Кнопка «Оформить заказ» не видна.", constructorPage.isCreateOrderButtonVisible());
     }
 
 
     @After
     public void tearDown() {
-        String deleteToken = userApi.getToken(email, password);
-        userApi.deleteUser(deleteToken, password); // Удаление пользователя через API
+        if (userApi != null) {
+            String deleteToken = userApi.getToken(email, password);
+            if (deleteToken != null) { // Проверка на null
+                userApi.deleteUser(deleteToken); // Удаление пользователя через API
+            } else {
+                System.err.println("Не удалось получить токен для удаления пользователя.");
+            }
+        }
         closeWebDriver(); // Закрытие драйвера
     }
 }
+
+
 
 
 

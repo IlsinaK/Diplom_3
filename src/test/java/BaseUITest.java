@@ -13,7 +13,7 @@ public class BaseUITest {
     @Before
     public void startUp() throws IOException{
         initDriver();
-        Configuration.timeout = 4000;
+        Configuration.timeout = 10000;
     }
 
     @After

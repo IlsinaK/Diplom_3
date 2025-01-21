@@ -1,7 +1,8 @@
 import api.UserApi;
+import io.qameta.allure.Description;
+import io.qameta.allure.junit4.DisplayName;
 import org.example.pageobject.ConstructorPage;
 import org.example.pageobject.LoginPage;
-import org.example.pageobject.ProfilePage;
 import org.example.pageobject.RegistrationPage;
 import org.junit.After;
 import org.junit.Before;
@@ -18,34 +19,16 @@ import static org.example.pageobject.ConstructorPage.CONSTRUCTOR_PAGE_URL;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
-public class RegistrationParamTest {
+public class RegistrationParamTest extends BaseUITest{
 
     private ConstructorPage constructorPage;
     private LoginPage loginPage;
     private RegistrationPage registrationPage;
     private String invalidPassword;
     private UserApi userApi;
-    private ProfilePage profilePage;
-    private String name;
-    private String email;
-    private String password;
-
-    @Before
-    public void setUp() {
-        open(CONSTRUCTOR_PAGE_URL);
-        constructorPage = new ConstructorPage();
-        constructorPage.goToProfile();
-
-        loginPage = new LoginPage();
-        loginPage.goToRegister();
-
-        registrationPage = new RegistrationPage();
-
-        userApi = new UserApi();
-        profilePage = new ProfilePage();
-    }
 
     public RegistrationParamTest(String invalidPassword) {
+
         this.invalidPassword = invalidPassword;
     }
 
@@ -59,23 +42,39 @@ public class RegistrationParamTest {
         });
     }
 
+    @Before
+    public void setUp() {
+        open(CONSTRUCTOR_PAGE_URL);
+        constructorPage = new ConstructorPage();
+        constructorPage.goToProfile();
+
+        loginPage = new LoginPage();
+        loginPage.goToRegister();
+
+        registrationPage = new RegistrationPage();
+        userApi = new UserApi();
+    }
+
+
     @Test
-    public void errorTextForInvalidPassword() {
-        registrationPage.goRegister("Тест56", "test@example.com", invalidPassword, true);
+    @DisplayName("Проверка текста ошибки для недопустимого пароля при регистрации")
+    @Description("Тест проверяет, что отображается сообщение об ошибке и красная рамка для недопустимого пароля.")
+
+    public void errorTextForInvalidPasswordTest() {
+        registrationPage.goRegister("Тест56", "test@example.com", invalidPassword);
 
         registrationPage.waitForIncorrectPasswordText();
         registrationPage.waitForRedBorder();
 
         assertTrue("Сообщение об ошибке не видно для пароля: " + invalidPassword,
-                registrationPage.getIncorrectPasswordText().isDisplayed());
+                registrationPage.isIncorrectPasswordTextVisible());
         assertTrue("Красная рамка не видна для пароля: " + invalidPassword,
-                registrationPage.getRedBorder().isDisplayed());
+                registrationPage.isRedBorderVisible());
     }
 
     @After
     public void tearDown() {
-        String deleteToken = userApi.getToken(email, password);
-        userApi.deleteUser(deleteToken, password); // Удаление пользователя через API
+
         closeWebDriver(); // Закрытие драйвера
     }
 }
