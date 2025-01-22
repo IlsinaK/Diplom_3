@@ -1,9 +1,10 @@
 import api.UserApi;
 import api.UserDataLombok;
 import api.UserGenerator;
+import api.UserLogin;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
-import io.restassured.response.ValidatableResponse;
 import org.example.pageobject.*;
 import org.junit.After;
 import org.junit.Before;
@@ -26,18 +27,15 @@ public class LoginTest extends BaseUITest{
     private ProfilePage profilePage;
 
     @Before
-    public void setUp() {
+    public void setUp() throws JsonProcessingException {
         open(CONSTRUCTOR_PAGE_URL);
         constructorPage = new ConstructorPage();
 
         userApi = new UserApi();
-        user = UserGenerator.getRandomUser();
+        user = UserGenerator.getRandomUser(); // Генерируем данные для нового пользователя
+        userApi.registerUser(user);
 
-        // Регистрация пользователя через API
-        String requestBody = String.format("{\"email\":\"%s\",\"password\":\"%s\",\"name\":\"%s\"}",
-                user.getEmail(), user.getPassword(), user.getName());
-        ValidatableResponse response = userApi.registerUser(requestBody);
-        response.statusCode(200);
+
 
         open(CONSTRUCTOR_PAGE_URL);
 
@@ -55,7 +53,7 @@ public class LoginTest extends BaseUITest{
         loginPage.login(user.getEmail(), user.getPassword());
         constructorPage.goToProfile();
 
-        profilePage.waitForProfileButton(); // Ожидание кнопки
+        profilePage.waitForProfileButton();
         assertTrue("Кнопка «Профиль» не видна.", profilePage.getProfileButton().isDisplayed());
         profilePage.logout();
 
@@ -108,11 +106,9 @@ public class LoginTest extends BaseUITest{
 
     @After
     public void tearDown() {
-        String deleteToken = userApi.getToken(user.getEmail(), user.getPassword());
+        String deleteToken = userApi.getToken(new UserLogin(user.getEmail(), user.getPassword())); // Получаем токен для удаления пользователя
         userApi.deleteUser(deleteToken);
-        if (driver != null) {
-            driver.quit();
-            closeWebDriver(); // Закрытие драйвера
+        closeWebDriver(); // Закрытие драйвера
         }
     }
-}
+

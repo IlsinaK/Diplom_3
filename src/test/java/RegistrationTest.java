@@ -1,4 +1,6 @@
 import api.UserApi;
+import api.UserDataLombok;
+import api.UserLogin;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
 import org.example.pageobject.ConstructorPage;
@@ -18,7 +20,7 @@ import static com.codeborne.selenide.Selenide.open;
 import static org.junit.Assert.assertTrue;
 
 
-public class RegistrationTest extends BaseUITest{
+public class RegistrationTest extends BaseUITest {
 
     private ConstructorPage constructorPage;
     private LoginPage loginPage;
@@ -28,6 +30,7 @@ public class RegistrationTest extends BaseUITest{
     private String name;
     private String email;
     private String password;
+    private UserDataLombok user;
 
     @Before
     public void setUp() {
@@ -43,6 +46,7 @@ public class RegistrationTest extends BaseUITest{
 
         userApi = new UserApi();
         profilePage = new ProfilePage();
+        user = new UserDataLombok(email, password, name);
 
         Properties properties = new Properties();
         try (InputStream input = getClass().getClassLoader().getResourceAsStream("browser.properties")) {
@@ -76,7 +80,12 @@ public class RegistrationTest extends BaseUITest{
     @After
     public void tearDown() {
         if (userApi != null) {
-            String deleteToken = userApi.getToken(email, password);
+            // Создание объекта UserLogin с email и password
+            UserLogin userLogin = new UserLogin(email, password);
+
+            // Получение токена для удаления пользователя
+            String deleteToken = userApi.getToken(userLogin);
+
             if (deleteToken != null) { // Проверка на null
                 userApi.deleteUser(deleteToken); // Удаление пользователя через API
             } else {
@@ -85,7 +94,9 @@ public class RegistrationTest extends BaseUITest{
         }
         closeWebDriver(); // Закрытие драйвера
     }
+
 }
+
 
 
 

@@ -48,7 +48,7 @@ public class ConstructorTest extends BaseUITest {
     @After
     public void tearDown() {
 
-        closeWebDriver(); // Закрываем браузер
+        closeWebDriver();
     }
 }
 

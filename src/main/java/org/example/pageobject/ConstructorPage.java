@@ -47,6 +47,7 @@ public class ConstructorPage {
 
     @Step("Ожидание текста 'Соберите бургер'")
     public void waitForAssembleBurger() {
+
         assembleBurger.shouldBe(visible);
     }
 
@@ -56,6 +57,7 @@ public class ConstructorPage {
 
     @Step("Переход в личный кабинет")
     public void goToProfile() {
+
         new ButtonElement(personalAccountButtonLocator).clickButton();
     }
 
@@ -66,16 +68,19 @@ public class ConstructorPage {
 
     @Step("Выбор раздела 'Булки'")
     public void selectBuns() {
+
         new ButtonElement(sectionBunButtonLocator).clickButton();
     }
 
     @Step("Выбор раздела 'Соусы'")
     public void selectSauces() {
+
         new ButtonElement(sectionSaucesButtonLocator).clickButton();
     }
 
     @Step("Выбор раздела 'Начинки'")
     public void selectToppings() {
+
         new ButtonElement(sectionToppingsButtonLocator).clickButton();
     }
 

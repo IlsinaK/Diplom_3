@@ -15,6 +15,6 @@ public class UserDataLombok {
         this.password = password;
         this.name = name;
     }
-    }
+}
 
 

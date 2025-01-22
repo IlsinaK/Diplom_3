@@ -15,14 +15,15 @@ public class InputElement {
         inputElement = $(new By.ByXPath(locator));
     }
 
-    public InputElement(SelenideElement selenideElement) {
-
-        inputElement = selenideElement;
-    }
-
     @Step("Очистить и установить значение")
     public void clearAndSetValue(String inputValue) {
         inputElement.shouldBe(enabled).clear();
+        inputElement.setValue(inputValue);
+    }
+
+    @Step("Очистить и установить значение")
+    public void setValue(String inputValue) {
+        inputElement.shouldBe(enabled);
         inputElement.setValue(inputValue);
     }
 }

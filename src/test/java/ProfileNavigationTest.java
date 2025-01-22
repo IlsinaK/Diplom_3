@@ -1,9 +1,9 @@
 import api.UserApi;
 import api.UserDataLombok;
 import api.UserGenerator;
+import api.UserLogin;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
-import io.restassured.response.ValidatableResponse;
 import org.example.pageobject.*;
 import org.junit.After;
 import org.junit.Before;
@@ -29,7 +29,8 @@ public class ProfileNavigationTest extends BaseUITest{
     @Before
     public void setUp() {
         userApi = new UserApi();
-        user = UserGenerator.getRandomUser();
+        user = UserGenerator.getRandomUser(); // Генерируем данные для нового пользователя
+        userApi.registerUser(user);
 
         open(CONSTRUCTOR_PAGE_URL);
         constructorPage = new ConstructorPage();
@@ -38,11 +39,6 @@ public class ProfileNavigationTest extends BaseUITest{
         forgotPasswordPage = new ForgotPasswordPage();
         profilePage = new ProfilePage();
 
-        // Регистрация пользователя через API
-        String requestBody = String.format("{\"email\":\"%s\",\"password\":\"%s\",\"name\":\"%s\"}",
-                user.getEmail(), user.getPassword(), user.getName());
-        ValidatableResponse response = userApi.registerUser(requestBody);
-        response.statusCode(200);
 
         constructorPage.goToAccount();
         loginPage.login(user.getEmail(), user.getPassword());
@@ -71,7 +67,7 @@ public class ProfileNavigationTest extends BaseUITest{
 
     @After
     public void tearDown() {
-        String deleteToken = userApi.getToken(user.getEmail(), user.getPassword());
+        String deleteToken = userApi.getToken(new UserLogin(user.getEmail(), user.getPassword())); // Получаем токен для удаления пользователя
         userApi.deleteUser(deleteToken); // Удаление пользователя через API
         closeWebDriver(); // Закрытие драйвера
     }

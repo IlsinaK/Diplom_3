@@ -35,19 +35,19 @@ public class ProfilePage {
     }
 
     @Step("Выход из аккаунта")
-    public void logout() {     //выход из аккаунта
+    public void logout() {
 
         new ButtonElement(exitButtonLocator).clickButton();
     }
 
     @Step("Переход на страницу 'Конструктор'")
-    public void goToConstructor() {  //переход через нажатие на Конструктор
+    public void goToConstructor() {
 
         new ButtonElement(constructorButtonLocator).clickButton();
     }
 
     @Step("Переход на страницу 'Конструктор' через нажатие на логотип Stellar Burgers")
-    public void clickLogo() {  //переход через нажатие на лого
+    public void clickLogo() {
 
         new ButtonElement(logoStellarBurgersButtonLocator).clickButton();
 
